@@ -1,0 +1,3 @@
+
+off = "OFF"
+on = "ON"
