@@ -60,3 +60,4 @@ class ASM:
         asm_file = open(f'{self.filename}.asm', 'w')
         asm_file.write(code)
         asm_file.close()
+        print("Finished")
