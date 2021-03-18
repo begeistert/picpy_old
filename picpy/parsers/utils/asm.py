@@ -1,3 +1,5 @@
+import os
+
 class ASM:
     """
     A class used to represent an asm file
@@ -21,11 +23,13 @@ class ASM:
         self.variables = {}
         self.var_alloc = 0x00
         self.config_zone = ''
+        self.mask_zone = ''
         self.variables = {}
         self.code_zone = {
             "Pre-Main": '',
             "Main": '',
-            "functions": {}
+            "functions": {},
+            "footers": ''
         }
         self.foo = {}
 
@@ -48,16 +52,33 @@ class ASM:
         self.var_alloc += 1
         print(self.variables)
 
+    def delete_dependencies(self):
+        dependencies = self.code_zone['footers'].strip('\n')
+        if isinstance(dependencies, list):
+            for dependency in dependencies:
+                dependency = dependency.strip()
+                dependency = dependency.replace("INCLUDE <", '')
+                dependency = dependency.replace(">", '')
+                os.remove(f'{os.path.dirname(self.filename)}/{dependency}')
+        else:
+            dependencies = dependencies.strip()
+            dependencies = dependencies.replace("INCLUDE <", '')
+            dependencies = dependencies.replace(">", '')
+            os.remove(f'{os.path.dirname(self.filename)}/{dependencies}')
+
     def build_asm_file(self):
         code = ''
         code += self.header
         code += self.config_zone
+        code += '   CBLOCK  0x0C\n   ENDC\n'
+        code += self.mask_zone
         code += self.code_zone['Pre-Main']
         code += f'Main\n{self.code_zone["Main"]}\n'
         for key, value in self.code_zone['functions'].items():
             code += f'{key}\n{value["code"]}'
+        code += self.code_zone['footers']
         code += '\n   END'
         asm_file = open(f'{self.filename}.asm', 'w')
         asm_file.write(code)
         asm_file.close()
-        print("Finished")
+        # self.delete_dependencies()

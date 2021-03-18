@@ -3,9 +3,9 @@
 def build(reset=0x02000, interrupt=0x02008, **kwargs):
     if "build" in kwargs.keys():
         if kwargs["build"]:
-            return f"\n   ORG     {hex(reset)}\n" \
+            return f"   ORG     {hex(reset)}\n" \
                     f"   GOTO    {hex(interrupt)}\n" \
-                    f"   ORG     {hex(interrupt)}\n\n"
+                    f"   ORG     {hex(interrupt)}\n"
 
 
 def org(vectors: list):

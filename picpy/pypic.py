@@ -5,7 +5,7 @@ import os
 
 def build(path):
     script = parse(open(path).read()).body
-    get_asm(script, os.path.basename(path).replace('.py', ''))
+    get_asm(script, path)
 
 
 def gpasm_swd(path):

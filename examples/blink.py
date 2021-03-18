@@ -6,10 +6,13 @@ delay(internal=INT_4M)
 
 
 def init():
-    TRIS.A = 0x0
+    TRIS.A = 0xFE
 
 
 init()
+LED = PORT.A[0]
+
 while True:
-    PORT.A = 0xff
+    toggle(LED)
+    delay_ms(500)
 

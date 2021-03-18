@@ -1,5 +1,5 @@
 import picpy as pic
 
-pic.build("examples/blank.py")
+pic.build("examples/blink.py")
 
 

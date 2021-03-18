@@ -1,4 +1,5 @@
 from picpy.utils.base import PortList, TrisList
+from picpy.utils.io import toggle
 
 config = "CONFIG"
 fuses_asm = {

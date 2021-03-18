@@ -3,6 +3,7 @@ from picpy.devices.pic18 import fuses
 
 PORT = PortList("E")
 TRIS = TrisList("E")
+
 pic = "18f45k50"
 
 xtal = "XTAL"
