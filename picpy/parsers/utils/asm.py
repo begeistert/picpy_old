@@ -20,6 +20,7 @@ class ASM:
         self.success = True
         self.filename = filename
         self.header = ""
+        self.cblock = []
         self.variables = {}
         self.var_alloc = 0x00
         self.config_zone = ''
@@ -28,10 +29,13 @@ class ASM:
         self.code_zone = {
             "Pre-Main": '',
             "Main": '',
+            'main': [],
             "functions": {},
             "footers": ''
         }
+        self.tables = {}
         self.foo = {}
+        self.n_loop = 0
 
     def set_main_code(self, code):
         self.code_zone['Main'] = code
@@ -69,16 +73,31 @@ class ASM:
     def build_asm_file(self):
         code = ''
         code += self.header
-        code += self.config_zone
-        code += '   CBLOCK  0x0C\n   ENDC\n'
-        code += self.mask_zone
+        code += self.config_zone + '\n'
+        cblock = "".join(self.cblock)
+        code += f'   CBLOCK  0x0C\n{cblock}   ENDC\n\n'
+        code += self.mask_zone + '\n'
         code += self.code_zone['Pre-Main']
-        code += f'Main\n{self.code_zone["Main"]}\n'
+        code += f'Main: \n{self.code_zone["Main"]}\n'
         for key, value in self.code_zone['functions'].items():
-            code += f'{key}\n{value["code"]}'
+            code += f'{key}:\n{value["code"]}'
+        for key, value in self.tables.items():
+            code += f'{key}:\n{value["code"]}'
         code += self.code_zone['footers']
         code += '\n   END'
         asm_file = open(f'{self.filename}.asm', 'w')
         asm_file.write(code)
         asm_file.close()
         # self.delete_dependencies()
+
+    def call(self, subroutine, context):
+        _call = f'   CALL {subroutine}'
+        self.code_zone[context].append(_call)
+
+    def bra(self, subroutine, context):
+        _bra = f'   BRA {subroutine}'
+        self.code_zone[context].append(_bra)
+
+    def goto(self, destiny, context):
+        _goto = f'   GOTO {destiny}'
+        self.code_zone[context].append(_goto)
